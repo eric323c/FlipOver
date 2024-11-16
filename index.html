@@ -3,14 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth0 Minimal Test</title>
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <title>Auth0 Login Test</title>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 </head>
 <body>
   <h1>Auth0 Test</h1>
+  <button id="login">Login</button>
+  <button id="logout" style="display:none;">Logout</button>
+  <p id="status">Checking authentication status...</p>
+
   <script>
-    console.log("Testing Auth0...");
-    console.log("Is createAuth0Client defined?", typeof createAuth0Client);
+    const AUTH0_DOMAIN = 'dev-fspyqqzirbktq1z0.us.auth0.com';
+    const AUTH0_CLIENT_ID = 'hGrIUja5wrQGNDajYGGhObHGXsmvlzep';
+    const REDIRECT_URI = window.location.origin;
+
+    let auth0Client;
+
+    async function initAuth0() {
+      console.log("Initializing Auth0...");
+      auth0Client = await createAuth0Client({
+        domain: AUTH0_DOMAIN,
+        clientId: AUTH0_CLIENT_ID,
+        authorizationParams: { redirect_uri: REDIRECT_URI },
+      });
+
+      console.log("Auth0 Client Initialized:", auth0Client);
+
+      const isAuthenticated = await auth0Client.isAuthenticated();
+      if (isAuthenticated) {
+        const user = await auth0Client.getUser();
+        document.getElementById("status").innerText = `Logged in as ${user.name}`;
+        document.getElementById("login").style.display = "none";
+        document.getElementById("logout").style.display = "block";
+      } else {
+        document.getElementById("status").innerText = "You are not logged in.";
+      }
+    }
+
+    async function login() {
+      await auth0Client.loginWithRedirect();
+    }
+
+    async function logout() {
+      await auth0Client.logout({ logoutParams: { returnTo: REDIRECT_URI } });
+      document.getElementById("login").style.display = "block";
+      document.getElementById("logout").style.display = "none";
+      document.getElementById("status").innerText = "You are not logged in.";
+    }
+
+    window.onload = async () => {
+      await initAuth0();
+      document.getElementById("login").addEventListener("click", login);
+      document.getElementById("logout").addEventListener("click", logout);
+    };
   </script>
 </body>
 </html>
