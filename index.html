@@ -72,6 +72,9 @@
       document.getElementById("login").addEventListener("click", login);
       document.getElementById("logout").addEventListener("click", logout);
     };
+console.log("Is Auth0 globally available?", typeof createAuth0Client);
+console.log("Auth0 Script:", document.querySelector('script[src*="auth0-spa-js"]'));
+
   </script>
 </body>
 </html>
