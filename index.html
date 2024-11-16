@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auth0 Login/Signup</title>
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,14 +33,12 @@
   </div>
 
   <script>
-    // Replace these values with your Auth0 credentials
     const AUTH0_DOMAIN = 'dev-fspyqqzirbktq1z0.us.auth0.com';
     const AUTH0_CLIENT_ID = 'hGrIUja5wrQGNDajYGGhObHGXsmvlzep';
     const REDIRECT_URI = 'https://golden-pothos-8d9157.netlify.app';
 
     let auth0 = null;
 
-    // Initialize Auth0
     async function initAuth0() {
       auth0 = await createAuth0Client({
         domain: AUTH0_DOMAIN,
@@ -52,7 +49,6 @@
       });
     }
 
-    // Update the UI based on authentication status
     async function updateUI() {
       const isAuthenticated = await auth0.isAuthenticated();
 
@@ -72,12 +68,10 @@
       }
     }
 
-    // Handle login
     async function login() {
       await auth0.loginWithRedirect();
     }
 
-    // Handle logout
     async function logout() {
       await auth0.logout({
         logoutParams: { returnTo: REDIRECT_URI },
@@ -85,7 +79,6 @@
       updateUI();
     }
 
-    // Handle redirect callback
     async function handleAuthRedirect() {
       if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
         try {
@@ -97,16 +90,18 @@
       }
     }
 
-    // Initialize everything
     window.onload = async () => {
+      console.log('Initializing application...');
       await initAuth0();
       await handleAuthRedirect();
       await updateUI();
 
-      // Attach event listeners to buttons
       document.getElementById('login').addEventListener('click', login);
       document.getElementById('logout').addEventListener('click', logout);
     };
   </script>
+
+  <!-- Load Auth0 SDK last -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 </body>
 </html>
