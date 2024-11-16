@@ -43,7 +43,9 @@
           },
         });
       });
-
+    auth0.handleRedirectCallback().then(() => {
+      window.location.href = '/';
+    });
       if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
         try {
           await auth0.handleRedirectCallback();
