@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auth0 Login</title>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+    button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Your App</h1>
+  <div id="content">
+    <button id="login">Login / Signup</button>
+    <button id="logout" style="display:none;">Logout</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const auth0 = await createAuth0Client({
+        domain: 'dev-fspyqqzirbktq1z0.us.auth0.com',
+        clientId: 'hGrIUja5wrQGNDajYGGhObHGXsmvlzep',
+        authorizationParams: {
+          redirect_uri: window.location.origin,
+        },
+      });
+
+      const loginButton = document.getElementById('login');
+      const logoutButton = document.getElementById('logout');
+      const status = document.getElementById('status');
+
+      loginButton.addEventListener('click', () => {
+        auth0.loginWithRedirect();
+      });
+
+      logoutButton.addEventListener('click', () => {
+        auth0.logout({
+          logoutParams: {
+            returnTo: window.location.origin,
+          },
+        });
+      });
+
+      if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+        try {
+          await auth0.handleRedirectCallback();
+        } catch (err) {
+          console.error('Error handling redirect callback:', err);
+        }
+        window.history.replaceState({}, document.title, '/');
+      }
+
+      const isAuthenticated = await auth0.isAuthenticated();
+
+      if (isAuthenticated) {
+        const user = await auth0.getUser();
+        status.innerHTML = `Hello, ${user.name}`;
+        loginButton.style.display = 'none';
+        logoutButton.style.display = 'block';
+      } else {
+        status.innerHTML = 'You are not logged in.';
+        loginButton.style.display = 'block';
+        logoutButton.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
