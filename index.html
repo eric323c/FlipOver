@@ -25,6 +25,7 @@
   </style>
 </head>
 <body>
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js" defer></script>
   <h1>Welcome to Your App</h1>
   <div id="content">
     <button id="login">Login / Signup</button>
@@ -99,9 +100,9 @@
       document.getElementById('login').addEventListener('click', login);
       document.getElementById('logout').addEventListener('click', logout);
     };
+ console.log('typeof createAuth0Client:', typeof createAuth0Client);
   </script>
 
   <!-- Load Auth0 SDK last -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
 </body>
 </html>
